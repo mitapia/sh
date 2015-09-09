@@ -1,11 +1,8 @@
-function adaptec () {
-	$1 getconfig 1;
-}
-
+#!/bin/bash
 
 adaptec_loations=(
 	'/opt/Adaptec_Event_Monitor/arcconf'	# FreeBSD
-	'/opt/StorMan/arcconf'					# FreeBSD
+	'/opt/StorMan/arcconf'			# FreeBSD
 	'/usr/Adaptec_Event_Monitor/arcconf'
 	'/usr/StorMan/arcconf'
 )
@@ -13,7 +10,7 @@ adaptec_loations=(
 # Adaptec
 for location in ${adaptec_loations[@]}; do
 	if [[ -a $location ]]; then
-		adaptec $location;
+		$location getconfig 1;
 		exit;
 	fi
 done
