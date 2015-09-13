@@ -10,7 +10,8 @@ adaptec_loations=(
 # Adaptec
 for location in ${adaptec_loations[@]}; do
 	if [[ -a $location ]]; then
-		$location getconfig 1;
+		$location getstatus 1;
+		$location getconfig 1 | grep "Controller\ Status\|Controller\ Model\|Logical\ device\ n\|Status\|RAID\ level";
 		exit;
 	fi
 done
