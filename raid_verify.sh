@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 adaptec_loations=(
 	'/opt/Adaptec_Event_Monitor/arcconf'	# FreeBSD
