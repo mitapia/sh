@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 if [ $(uname -s) == "Linux" ] ; then 
 	echo "enviroment runnign is Linux"
 	if [ -e /etc/redhat-release ] ; then
