@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # store necessary variables
 number_drives=$( parted -lms | grep /dev/sd | grep -v /dev/sda -c );
