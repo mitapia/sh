@@ -9,18 +9,18 @@ adaptec_loations=(
 
 # Adaptec
 for location in ${adaptec_loations[@]}; do
-	if [[ -a $location ]]; then
+	if [[ -e $location ]]; then
 		$location getstatus 1;
 		$location getconfig 1 | grep "Controller\ Status\|Controller\ Model\|Logical\ device\ n\|Status\|RAID\ level";
-		exit;
+		exit 0;
 	fi
 done
 
 # LSI
-if [ -a /opt/MegaRAID/storcli/storcli64 ]; then
+if [ -e /opt/MegaRAID/storcli/storcli64 ]; then
 	/opt/MegaRAID/storcli/storcli64 /c0 show all|grep -A 36 "VD LIST :";
-	exit;
+	exit 0;
 fi
 
 # if script got this far then no RAID software was found
-echo "No RAID software was found! Is this server supposed to be Onboard?"
+echo "No RAID software was found! Is this server supposed to be Onboard?";
