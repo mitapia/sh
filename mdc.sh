@@ -14,11 +14,12 @@ do
 #  Less then 2TB - msdos
 #  More then 2TB - gpt
 
-# makes sure that i did not miss any zeros
-	drive_size = $();
+# get size of drive
+	drive_size="$( parted -sm /dev/sdb print unit GB | awk '{ FS=":"; NR==2; sub("GB", ""); print $2 }' )";
 
-    limit=$((2*1000*1000*1000*1000))
-    if [ "$drive_size" -le $limit ]
+	# set in GB
+    limit=$((2000))
+    if [[ "$drive_size" -le "$limit" ]]
     then
         parted -s "$drive" mklabel msdos;
     else
@@ -26,21 +27,21 @@ do
     fi
 
     parted -s "$drive" mkpart primary 1 -- -1;
-    mkdir /disk$n;
+    mkdir /disk"$n";
 
 #  ext4 - up to 16TB
 #  xfs - 16TB-8EB  *per IS, CENTOS & RHEL v7 and above get XFS regardless of drive size
-    fs_size=$((16*1000*1000*1000*1000))
+    fs_size=$((16*1000))	#GB
     if [[ "$above_7" == "true" ]]; then
 		fs=xfs;
-    elif [[ "$drive_size" -le $fs_size ]]; then
+    elif [[ "$drive_size" -le "$fs_size" ]]; then
         fs=ext4;
     else
         fs=xfs;
     fi
 
-    mkfs.$fs -L /disk$n "$drive"'1';
-    echo "LABEL=/disk$n /disk$n $fs defaults 1 2" >> /etc/fstab;
+    mkfs.$fs -L /disk"$n" "$drive"'1';
+    echo "LABEL=/disk\"$n\" /disk$n \"$fs\" defaults 1 2" >> /etc/fstab;
 
     n=$(( n+1 ));
 done
