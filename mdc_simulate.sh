@@ -72,7 +72,7 @@ if [[ "$os" == "Linux" ]]; then
     done
 
     # Backup fstab before starting
-    cp /etc/fstab /root/fstab.bak;
+    # cp /etc/fstab /root/fstab.bak;
 
     for drive in "$drives[@]"
     do
@@ -87,13 +87,13 @@ if [[ "$os" == "Linux" ]]; then
         limit=$((2000))
         if [[ "$drive_size" -le "$limit" ]]
         then
-            parted -s "$drive" mklabel msdos;
+            echo 'parted -s "$drive" mklabel msdos';
         else
-            parted -s "$drive" mklabel gpt;
+            echo 'parted -s "$drive" mklabel gpt';
         fi
 
-        parted -s "$drive" mkpart primary 1 -- -1;
-        mkdir /disk"$n";
+        echo 'parted -s "$drive" mkpart primary 1 -- -1';
+        echo 'mkdir /disk"$n"';
 
         #  ext4 - up to 16TB
         #  xfs - 16TB-8EB  *per IS, CENTOS & RHEL v7 and above get XFS regardless of drive size
@@ -106,15 +106,14 @@ if [[ "$os" == "Linux" ]]; then
             #install require packages
         fi
 
-        mkfs.$fs -L /disk"$n" "$drive"'1';
-        echo "LABEL=/disk\"$n\" /disk$n \"$fs\" defaults 1 2" >> /etc/fstab;
+        echo 'mkfs.$fs -L /disk"$n" "$drive"1';
+        echo "LABEL=/disk\"$n\" /disk$n \"$fs\" defaults 1 2"; # >> /etc/fstab;
 
         n=$(( n+1 ));
     done
 
-    mount -a;
-    df -h | grep /disk;
-
+    # mount -a;
+    # df -h | grep /disk;
     adaptec_loations=(
         '/opt/Adaptec_Event_Monitor/arcconf'    # FreeBSD
         '/opt/StorMan/arcconf'          # FreeBSD
