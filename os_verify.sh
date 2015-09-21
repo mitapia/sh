@@ -22,16 +22,19 @@ if [[ "$os" == "Linux" ]]; then
         do
             if [[ "$key" == "ID" ]]; then
             	# **** need to remove quotations from value *****
-            	ID="${value//\"}";
+            	id="${value//\"}";
             elif [[ "$key" == "VERSION_ID" ]]; then
-            	VERSION_ID="${value//\"}";
+            	version_id="${value//\"}";
             fi
         done < <(cat /etc/os-release)
 
 		# if CentOS or RHEL, then check for ver.
-		if [[ "$ID" == "centos" ]] || [[ "$ID" == "rhel" ]]; then
-			echo "CentOS or RedHat above v7";
-			exit 0;
+		if [[ "$id" == "centos" ]] || [[ "$id" == "rhel" ]]; then
+			yum -y install bc;	# required for the ver comparison to work
+			if (( $(bc <<< "$version_id >= 7") )); then
+				echo "CentOS or RedHat above v7";
+				exit 0;
+            fi
 		fi
 	fi
 
