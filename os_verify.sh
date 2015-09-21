@@ -1,9 +1,14 @@
 #!/bin/bash
-os=$(uname -s);
+os="$(uname -s)";
 
-if [ $os == "Linux" ]; then
-	# if XenServer or ESX then dont run script
-	# ******missing test server*********
+if [[ "$os" == "Linux" ]]; then
+	# if vyatta
+	if [[ "$(echo $SHELL)" == "/bin/vbash" ]]; then
+		echo "Vyatta";
+		exit 0;
+	fi
+	
+	# if XenServer then dont run script
 	if [[ -e /etc/redhat-release ]]; then
 		if [[ "$(cat /etc/redhat-release)" == *"XenServer"* ]]; then
 			echo "XenServer";
@@ -11,23 +16,15 @@ if [ $os == "Linux" ]; then
 		fi
 	fi
 
-	# if QuantaStore, raid_verify
-	# ******missing test server*********
-
-
-	# if vyatta - not tested yet
-	if [[ "$(show version | grep -i vyatta | wc -l)" -gt 0 ]]; then
-		echo "Vyatta";
-	fi
-
 	if [[ -e /etc/os-release ]]; then
 		# retrive os name and version from file
         while IFS=\= read key value
         do
             if [[ "$key" == "ID" ]]; then
-            	ID=$value;
+            	# **** need to remove quotations from value *****
+            	ID="${value//\"}";
             elif [[ "$key" == "VERSION_ID" ]]; then
-            	VERSION_ID=$value;
+            	VERSION_ID="${value//\"}";
             fi
         done < <(cat /etc/os-release)
 
@@ -36,10 +33,11 @@ if [ $os == "Linux" ]; then
 			echo "CentOS or RedHat above v7";
 			exit 0;
 		fi
-
-		echo "Other Linux";
-		exit 0;
 	fi
+
+	echo "Other Linux";
+	exit 0;
+
 else
 	echo "This OS has not been properly tested.  Please email the following results to mitapia@softlayer.com:";
 	uname -a;
