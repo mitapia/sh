@@ -30,7 +30,8 @@ function ssh-test () {
      while read login; do
           # it is recommended to set up ssh keys for the servers in testing_server.list to avoid password prompt
           # connect to server and run script
-          ssh -t $login 'bash -s' < "${1}"
+          ssh-mdc "$login";
+          echo "Completed for " "$login";
 
      done < testing_servers.list  # each line must be 'user@ip'
 }
