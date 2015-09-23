@@ -1,10 +1,36 @@
 #!/bin/bash
+function raid_verify() {
+    adaptec_loations=(
+        '/opt/Adaptec_Event_Monitor/arcconf'    # FreeBSD
+        '/opt/StorMan/arcconf'          # FreeBSD
+        '/usr/Adaptec_Event_Monitor/arcconf'
+        '/usr/StorMan/arcconf'
+    )
+
+    # Adaptec
+    for location in ${adaptec_loations[@]}; do
+        if [[ -e $location ]]; then
+            $location getstatus 1;
+            $location getconfig 1 | grep "Controller\ Status\|Controller\ Model\|Logical\ device\ n\|Status\|RAID\ level";
+        fi
+    done
+
+    # LSI
+    if [ -e /opt/MegaRAID/storcli/storcli64 ]; then
+        /opt/MegaRAID/storcli/storcli64 /c0 show all|grep -A 36 "VD LIST :";
+    fi
+
+    # if script got this far then no RAID software was found
+    echo "No RAID software was found! Is this server supposed to be Onboard?";
+}
+
 os="$(uname -s)";
 
 if [[ "$os" == "Linux" ]]; then
     # if vyatta
     if [[ "$(echo $SHELL)" == "/bin/vbash" ]]; then
         echo "Script is currently not supported for Vyatta devices, please procced with a manual MDC.";
+        raid_verify;
         exit 0;
     fi
     
@@ -60,11 +86,13 @@ if [[ "$os" == "Linux" ]]; then
     # check for secondary drives
     if [[ $formating_drives -le 0 ]]; then
         echo "No secondary drives found";
+        raid_verify;
         exit 0;
     fi
 
     if [[ $formating_drives -ge 26 ]]; then
         echo "Script currently does not support formating more then 25 drives.";
+        raid_verify;
         exit 0;
     fi
 
@@ -76,6 +104,7 @@ if [[ "$os" == "Linux" ]]; then
             echo "Drive " $drive "has partitions."
             echo "This is either a Reload and should no go through an MDC, drives have already been partitioned, or this drive was not properly Reclamed.";
             echo "If these drives came from another server and where not formated, replace and change the status to Format in IMS.";
+            raid_verify;
             exit 0;
         fi
     done
@@ -134,30 +163,7 @@ if [[ "$os" == "Linux" ]]; then
     mount -a;
     df -h | grep /disk;
 
-    adaptec_loations=(
-        '/opt/Adaptec_Event_Monitor/arcconf'    # FreeBSD
-        '/opt/StorMan/arcconf'          # FreeBSD
-        '/usr/Adaptec_Event_Monitor/arcconf'
-        '/usr/StorMan/arcconf'
-    )
-
-    # Adaptec
-    for location in ${adaptec_loations[@]}; do
-        if [[ -e $location ]]; then
-            $location getstatus 1;
-            $location getconfig 1 | grep "Controller\ Status\|Controller\ Model\|Logical\ device\ n\|Status\|RAID\ level";
-            exit 0;
-        fi
-    done
-
-    # LSI
-    if [ -e /opt/MegaRAID/storcli/storcli64 ]; then
-        /opt/MegaRAID/storcli/storcli64 /c0 show all|grep -A 36 "VD LIST :";
-        exit 0;
-    fi
-
-    # if script got this far then no RAID software was found
-    echo "No RAID software was found! Is this server supposed to be Onboard?";
+    raid_verify;
     exit 0;
 else
     echo "This OS has not been properly tested.  Please email the following results to mitapia@softlayer.com:";
