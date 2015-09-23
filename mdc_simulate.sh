@@ -18,7 +18,16 @@ if [[ "$os" == "Linux" ]]; then
     fi
 
     # check for 'parted'
-    type parted >/dev/null 2>&1 || { echo >&2 "I require parted but it's not installed.  Aborting."; exit 1; }
+    if ! hash parted 2>/dev/null; then
+        # REQUIRED PACKAGE INSTALL
+        if [[ -f /etc/redhat-release ]]; then
+            yum -y install parted;
+        else
+            apt-get -y install parted;
+        fi
+        # reassurance it has been installed
+        hash parted 2>/dev/null || { echo >&2 "Parted is required but it's not installed.  Aborting."; exit 1; }
+    fi
 
     # store necessary variables
     number_drives=$( parted -lms | grep /dev/sd | grep -v /dev/sda -c );
@@ -40,13 +49,13 @@ if [[ "$os" == "Linux" ]]; then
 
         # if CentOS or RHEL, then check for ver.
         if [[ "$id" == "centos" ]] || [[ "$id" == "rhel" ]]; then
+            # REQUIRED PACKAGE INSTALL
             yum -y install bc;  # required for the ver comparison to work
             if (( $(bc <<< "$version_id >= 7") )); then
                 $above_7="true";
             fi
         fi
     fi
-
 
     # check for secondary drives
     if [ $formating_drives -le 0 ]; then
@@ -103,7 +112,17 @@ if [[ "$os" == "Linux" ]]; then
         else
             fs=xfs;
 
-            #install require packages
+            # if xfs not found to be installed, then procced to install
+            if ! hash mkfs.xfs 2>/dev/null; then
+                # REQUIRED PACKAGE INSTALL
+                if [[ -f /etc/redhat-release ]]; then
+                    yum -y install kmod-xfs.x86_64 xfsdump.x86_64 xfsprogs.x86_64;
+                else
+                    apt-get -y install xfsdump xfsprogs;
+                fi  
+                # reassurance it has been installed
+                hash mkfs.xfs 2>/dev/null || { echo >&2 "mkfs.xfs is required but it's not installed.  Aborting."; exit 1; }
+            fi
         fi
 
         echo 'mkfs.$fs -L /disk"$n" "$drive"1';
@@ -114,6 +133,7 @@ if [[ "$os" == "Linux" ]]; then
 
     # mount -a;
     # df -h | grep /disk;
+    
     adaptec_loations=(
         '/opt/Adaptec_Event_Monitor/arcconf'    # FreeBSD
         '/opt/StorMan/arcconf'          # FreeBSD
