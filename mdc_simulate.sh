@@ -33,7 +33,7 @@ if [[ "$os" == "Linux" ]]; then
     number_drives=$( parted -lms | grep /dev/sd | grep -v /dev/sda -c );
     drives=( $( parted -lms | grep /dev/sd | grep -v /dev/sda | awk -F':' '{ print $1}' ) )
 
-    $above_7="false"
+    above_7="false"
     # checks for CentOS/RHEL ver 7 and above
     if [[ -e /etc/os-release ]]; then
         # retrive os name and version from file
@@ -58,12 +58,12 @@ if [[ "$os" == "Linux" ]]; then
     fi
 
     # check for secondary drives
-    if [ $formating_drives -le 0 ]; then
+    if [[ $formating_drives -le 0 ]]; then
         echo "No secondary drives found";
         exit 0;
     fi
 
-    if [ $formating_drives -ge 26 ]; then
+    if [[ $formating_drives -ge 26 ]]; then
         echo "Script currently does not support formating more then 25 drives.";
         exit 0;
     fi
