@@ -1,5 +1,5 @@
 function ssh-mdc() {
-	/usr/bin/ssh -t '
+	/usr/bin/ssh -t "$@" '
 	# REQUIRED PACKAGE INSTALL
 	if [ -f /etc/redhat-release ]; then
 		yum -y install screen curl;
@@ -21,6 +21,5 @@ function ssh-mdc() {
   # attach to screen
   screen -S mdc -r;
   
-  rm "$script";
-
+  rm "$script";'
 }
