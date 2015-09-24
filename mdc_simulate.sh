@@ -60,7 +60,7 @@ if [[ "$os" == "Linux" ]]; then
     if [[ "$(echo $SHELL)" == "/bin/vbash" ]]; then
         printf "${Yellow}Script is currently not supported for Vyatta devices, please procced with a manual MDC.${NC}\n";
         raid_verify;
-        printf "${GreenBG}Enter 'exit' to finalize script:${NC}\n";
+        printf "${GreenBG}${Black}Enter 'exit' to finalize script:${NC}\n";
         exit 0;
     fi
     
@@ -85,7 +85,7 @@ if [[ "$os" == "Linux" ]]; then
         # reassurance it has been installed
         hash parted 2>/dev/null || { 
             printf >&2 "${RedBG}Parted is required but it's not installed.  Aborting.${NC}\n"; 
-            printf "${GreenBG}Enter 'exit' to finalize script:${NC}\n";
+            printf "${GreenBG}${Black}Enter 'exit' to finalize script:${NC}\n";
             exit 1; 
         }
     fi
@@ -122,14 +122,14 @@ if [[ "$os" == "Linux" ]]; then
     if [[ $number_drives -le 0 ]]; then
         printf "${Yellow}No secondary drives found${NC}\n";
         raid_verify;
-        printf "${GreenBG}Enter 'exit' to finalize script:${NC}\n";
+        printf "${GreenBG}${Black}Enter 'exit' to finalize script:${NC}\n";
         exit 0;
     fi
 
     if [[ $number_drives -ge 26 ]]; then
         printf "${Yellow}Script currently does not support formating more then 25 drives.${NC}\n";
         raid_verify;
-        printf "${GreenBG}Enter 'exit' to finalize script:${NC}\n";
+        printf "${GreenBG}${Black}Enter 'exit' to finalize script:${NC}\n";
         exit 1;
     fi
 
@@ -138,7 +138,7 @@ if [[ "$os" == "Linux" ]]; then
         # check for error reading device
         if [[ $( parted -sm $drive print | grep Error | wc -l ) -gt 0 ]]; then
             printf "${RedBG}Error reading drive $drive. Aborting.${NC}\n";
-            printf "${GreenBG}Enter 'exit' to finalize script:${NC}\n";
+            printf "${GreenBG}${Black}Enter 'exit' to finalize script:${NC}\n";
             exit 1;
         fi
 
@@ -148,7 +148,7 @@ if [[ "$os" == "Linux" ]]; then
             echo "If these drives came from another server and where not formated, replace and change the status to Format in IMS.";
             printf "\n\n";  # just want some empty lines
             raid_verify;
-            printf "${GreenBG}Enter 'exit' to finalize script:${NC}\n";
+            printf "${GreenBG}${Black}Enter 'exit' to finalize script:${NC}\n";
             exit 1;
         fi
     done
@@ -209,11 +209,11 @@ if [[ "$os" == "Linux" ]]; then
     # df -h | grep /disk;
     
     raid_verify;
-    printf "${GreenBG}Enter 'exit' to finalize script:${NC}\n";
+    printf "${GreenBG}${Black}Enter 'exit' to finalize script:${NC}\n";
     exit 0;
 else
     printf "${RedBG}This OS has not been properly tested.  Please email the following results to mitapia@softlayer.com:${NC}\n";
     uname -a;
-    printf "${GreenBG}Enter 'exit' to finalize script:${NC}\n";
+    printf "${GreenBG}${Black}Enter 'exit' to finalize script:${NC}\n";
     exit 1;
 fi
