@@ -18,10 +18,9 @@ function raid_verify() {
     # LSI
     if [ -e /opt/MegaRAID/storcli/storcli64 ]; then
         /opt/MegaRAID/storcli/storcli64 /c0 show all|grep -A 36 "VD LIST :";
+    else
+        echo "No RAID software was found! Is this server supposed to be Onboard?";        
     fi
-
-    # if script got this far then no RAID software was found
-    echo "No RAID software was found! Is this server supposed to be Onboard?";
 }
 
 os="$(uname -s)";
