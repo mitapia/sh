@@ -126,7 +126,8 @@ if [[ "$os" == "Linux" ]]; then
     # Backup fstab before starting
     cp /etc/fstab /root/fstab.bak;
 
-    for drive in "$drives[@]"
+    n=1;
+    for drive in "${drives[@]}"
     do
         #  check size of disk to be partitioned
         #  Less then 2TB - msdos
