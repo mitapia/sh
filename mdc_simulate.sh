@@ -143,7 +143,7 @@ if [[ "$os" == "Linux" ]]; then
         fi
 
         if [[ $( parted -sm $drive print | wc -l ) -gt 2 ]]; then
-            printf "${Red}Drive " $drive "has partitions.${NC}\n"
+            printf "${Red}Drive $drive has partitions.${NC}\n"
             echo "This is either a Reload and should no go through an MDC, drives have already been partitioned, or this drive was not properly Reclamed.";
             echo "If these drives came from another server and where not formated, replace and change the status to Format in IMS.";
             printf "\n\n";  # just want some empty lines
