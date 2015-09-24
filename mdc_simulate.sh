@@ -31,6 +31,7 @@ if [[ "$os" == "Linux" ]]; then
     if [[ "$(echo $SHELL)" == "/bin/vbash" ]]; then
         echo "Script is currently not supported for Vyatta devices, please procced with a manual MDC.";
         raid_verify;
+        echo "Enter 'exit' to finalize script:";
         exit 0;
     fi
     
@@ -39,7 +40,8 @@ if [[ "$os" == "Linux" ]]; then
         if [[ "$(cat /etc/redhat-release)" == *"XenServer"* ]]; then
             printf "If you are working on a reload or new provision with XenServer or VMware, DO NOT mount the drives. \n
                  Softly reboot the server, go into the RAID BIOS and verify the RAID setup and status from there.";
-            exit 0;
+            echo "Enter 'exit' to finalize script:";
+            exit 1;
         fi
     fi
 
@@ -52,7 +54,11 @@ if [[ "$os" == "Linux" ]]; then
             apt-get -y install parted;
         fi
         # reassurance it has been installed
-        hash parted 2>/dev/null || { echo >&2 "Parted is required but it's not installed.  Aborting."; exit 1; }
+        hash parted 2>/dev/null || { 
+            echo >&2 "Parted is required but it's not installed.  Aborting."; 
+            echo "Enter 'exit' to finalize script:";
+            exit 1; 
+        }
     fi
 
     # store necessary variables
@@ -66,7 +72,7 @@ if [[ "$os" == "Linux" ]]; then
         while IFS=\= read key value
         do
             if [[ "$key" == "ID" ]]; then
-                # **** need to remove quotations from value *****
+                # need to remove quotations from value
                 id="${value//\"}";
             elif [[ "$key" == "VERSION_ID" ]]; then
                 version_id="${value//\"}";
@@ -78,34 +84,42 @@ if [[ "$os" == "Linux" ]]; then
             # REQUIRED PACKAGE INSTALL
             yum -y install bc;  # required for the ver comparison to work
             if (( $(bc <<< "$version_id >= 7") )); then
-                $above_7="true";
+                above_7="true";
             fi
         fi
     fi
 
     # check for secondary drives
-    if [[ $formating_drives -le 0 ]]; then
+    if [[ $number_drives -le 0 ]]; then
         echo "No secondary drives found";
         raid_verify;
+        echo "Enter 'exit' to finalize script:";
         exit 0;
     fi
 
-    if [[ $formating_drives -ge 26 ]]; then
+    if [[ $number_drives -ge 26 ]]; then
         echo "Script currently does not support formating more then 25 drives.";
         raid_verify;
-        exit 0;
+        echo "Enter 'exit' to finalize script:";
+        exit 1;
     fi
 
     # check the secondary drives for existing partitions
     for drive in ${drives[@]}; do
         # check for error reading device
+        if [[ $( parted -sm /dev/sdc print | grep Error | wc -l ) -gt 0 ]]; then
+            echo "Error reading drive $drive. Aborting.";
+            echo "Enter 'exit' to finalize script:";
+            exit 1;
+        fi
 
-        if [ $( parted -sm $drive print | wc -l ) -gt 2 ]; then
+        if [[ $( parted -sm $drive print | wc -l ) -gt 2 ]]; then
             echo "Drive " $drive "has partitions."
             echo "This is either a Reload and should no go through an MDC, drives have already been partitioned, or this drive was not properly Reclamed.";
             echo "If these drives came from another server and where not formated, replace and change the status to Format in IMS.";
             raid_verify;
-            exit 0;
+            echo "Enter 'exit' to finalize script:";
+            exit 1;
         fi
     done
 
@@ -169,4 +183,6 @@ if [[ "$os" == "Linux" ]]; then
 else
     echo "This OS has not been properly tested.  Please email the following results to mitapia@softlayer.com:";
     uname -a;
+    echo "Enter 'exit' to finalize script:";
+    exit 1;
 fi
