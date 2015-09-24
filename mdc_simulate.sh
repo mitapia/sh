@@ -169,7 +169,7 @@ if [[ "$os" == "Linux" ]]; then
             fi
         fi
 
-        echo "mkfs.$fs -L /disk$n $drive1";
+        echo "mkfs.$fs -L /disk$n ${drive}1";
         echo "LABEL=/disk$n /disk$n $fs defaults 1 2"; # >> /etc/fstab;
 
         n=$(( n+1 ));
