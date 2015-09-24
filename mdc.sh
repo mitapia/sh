@@ -164,7 +164,7 @@ if [[ "$os" == "Linux" ]]; then
     df -h | grep /disk;
 
     raid_verify;
-    echo "Enter 'exit' to finalize script:"
+    echo "Enter 'exit' to finalize script:";
     exit 0;
 else
     echo "This OS has not been properly tested.  Please email the following results to mitapia@softlayer.com:";
