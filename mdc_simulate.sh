@@ -140,13 +140,13 @@ if [[ "$os" == "Linux" ]]; then
         limit=$((2000))
         if [[ "$drive_size" -le "$limit" ]]
         then
-            echo "parted -s \"$drive\" mklabel msdos";
+            echo "parted -s $drive mklabel msdos";
         else
-            echo "parted -s \"$drive\" mklabel gpt";
+            echo "parted -s $drive mklabel gpt";
         fi
 
-        echo "parted -s \"$drive\" mkpart primary 1 -- -1";
-        echo "mkdir /disk\"$n\"";
+        echo "parted -s $drive mkpart primary 1 -- -1";
+        echo "mkdir /disk$n";
 
         #  ext4 - up to 16TB
         #  xfs - 16TB-8EB  *per IS, CENTOS & RHEL v7 and above get XFS regardless of drive size
@@ -169,8 +169,8 @@ if [[ "$os" == "Linux" ]]; then
             fi
         fi
 
-        echo "mkfs.$fs -L /disk\"$n\" \"$drive\"1";
-        echo "LABEL=/disk\"$n\" /disk$n \"$fs\" defaults 1 2"; # >> /etc/fstab;
+        echo "mkfs.$fs -L /disk$n $drive1";
+        echo "LABEL=/disk$n /disk$n $fs defaults 1 2"; # >> /etc/fstab;
 
         n=$(( n+1 ));
     done
