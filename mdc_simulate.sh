@@ -107,7 +107,7 @@ if [[ "$os" == "Linux" ]]; then
     # check the secondary drives for existing partitions
     for drive in ${drives[@]}; do
         # check for error reading device
-        if [[ $( parted -sm /dev/sdc print | grep Error | wc -l ) -gt 0 ]]; then
+        if [[ $( parted -sm $drive print | grep Error | wc -l ) -gt 0 ]]; then
             echo "Error reading drive $drive. Aborting.";
             echo "Enter 'exit' to finalize script:";
             exit 1;
