@@ -133,7 +133,7 @@ if [[ "$os" == "Linux" ]]; then
         #  More then 2TB - gpt
 
         # get size of drive
-        drive_size="$( parted -sm /dev/sdb print unit GB | awk '{ FS=":"; NR==2; sub("GB", ""); print $2 }' )";
+        drive_size="$( parted -sm $drive print unit GB | awk '{ FS=":"; NR==2; sub("GB", ""); print $2 }' )";
 
         # set in GB
         limit=$((2000))
