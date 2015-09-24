@@ -1,4 +1,34 @@
 #!/bin/bash
+# Colors
+    txtund=$(tput sgr 0 1)          # Underline
+    txtbld=$(tput bold)             # Bold
+
+    Black="$(tput setaf 0)"
+    BlackBG="$(tput setab 0)"
+    DarkGrey="$(tput bold ; tput setaf 0)"
+    LightGrey="$(tput setaf 7)"
+    LightGreyBG="$(tput setab 7)"
+    White="$(tput bold ; tput setaf 7)"
+    Red="$(tput setaf 1)"
+    RedBG="$(tput setab 1)"
+    LightRed="$(tput bold ; tput setaf 1)"
+    Green="$(tput setaf 2)"
+    GreenBG="$(tput setab 2)"
+    LightGreen="$(tput bold ; tput setaf 2)"
+    Brown="$(tput setaf 3)"
+    BrownBG="$(tput setab 3)"
+    Yellow="$(tput bold ; tput setaf 3)"
+    Blue="$(tput setaf 4)"
+    BlueBG="$(tput setab 4)"
+    LightBlue="$(tput bold ; tput setaf 4)"
+    Purple="$(tput setaf 5)"
+    PurpleBG="$(tput setab 5)"
+    Pink="$(tput bold ; tput setaf 5)"
+    Cyan="$(tput setaf 6)"
+    CyanBG="$(tput setab 6)"
+    LightCyan="$(tput bold ; tput setaf 6)"
+    NC="$(tput sgr0)"       # No Color
+
 function raid_verify() {
     adaptec_loations=(
         '/opt/Adaptec_Event_Monitor/arcconf'    # FreeBSD
@@ -19,7 +49,7 @@ function raid_verify() {
     if [ -e /opt/MegaRAID/storcli/storcli64 ]; then
         /opt/MegaRAID/storcli/storcli64 /c0 show all|grep -A 36 "VD LIST :";
     else
-        echo "No RAID software was found! Is this server supposed to be Onboard?";        
+        printf "${Yellow}No RAID software was found! Is this server supposed to be Onboard?${NC}\n";        
     fi
 }
 
@@ -28,9 +58,9 @@ os="$(uname -s)";
 if [[ "$os" == "Linux" ]]; then
     # if vyatta
     if [[ "$(echo $SHELL)" == "/bin/vbash" ]]; then
-        echo "Script is currently not supported for Vyatta devices, please procced with a manual MDC.";
+        printf "${Yellow}Script is currently not supported for Vyatta devices, please procced with a manual MDC.${NC}\n";
         raid_verify;
-        echo "Enter 'exit' to finalize script:";
+        printf "${GreenBG}Enter 'exit' to finalize script:${NC}\n";
         exit 0;
     fi
     
@@ -54,8 +84,8 @@ if [[ "$os" == "Linux" ]]; then
         fi
         # reassurance it has been installed
         hash parted 2>/dev/null || { 
-            echo >&2 "Parted is required but it's not installed.  Aborting."; 
-            echo "Enter 'exit' to finalize script:";
+            printf >&2 "${RedBG}Parted is required but it's not installed.  Aborting.${NC}\n"; 
+            printf "${GreenBG}Enter 'exit' to finalize script:${NC}\n";
             exit 1; 
         }
     fi
@@ -90,16 +120,16 @@ if [[ "$os" == "Linux" ]]; then
 
     # check for secondary drives
     if [[ $number_drives -le 0 ]]; then
-        echo "No secondary drives found";
+        printf "${Yellow}No secondary drives found${NC}\n";
         raid_verify;
-        echo "Enter 'exit' to finalize script:";
+        printf "${GreenBG}Enter 'exit' to finalize script:${NC}\n";
         exit 0;
     fi
 
     if [[ $number_drives -ge 26 ]]; then
-        echo "Script currently does not support formating more then 25 drives.";
+        printf "${Yellow}Script currently does not support formating more then 25 drives.${NC}\n";
         raid_verify;
-        echo "Enter 'exit' to finalize script:";
+        printf "${GreenBG}Enter 'exit' to finalize script:${NC}\n";
         exit 1;
     fi
 
@@ -107,17 +137,18 @@ if [[ "$os" == "Linux" ]]; then
     for drive in ${drives[@]}; do
         # check for error reading device
         if [[ $( parted -sm $drive print | grep Error | wc -l ) -gt 0 ]]; then
-            echo "Error reading drive $drive. Aborting.";
-            echo "Enter 'exit' to finalize script:";
+            printf "${RedBG}Error reading drive $drive. Aborting.${NC}\n";
+            printf "${GreenBG}Enter 'exit' to finalize script:${NC}\n";
             exit 1;
         fi
 
         if [[ $( parted -sm $drive print | wc -l ) -gt 2 ]]; then
-            echo "Drive " $drive "has partitions."
+            printf "${Red}Drive " $drive "has partitions.${NC}\n"
             echo "This is either a Reload and should no go through an MDC, drives have already been partitioned, or this drive was not properly Reclamed.";
             echo "If these drives came from another server and where not formated, replace and change the status to Format in IMS.";
+            printf "\n\n";  # just want some empty lines
             raid_verify;
-            echo "Enter 'exit' to finalize script:";
+            printf "${GreenBG}Enter 'exit' to finalize script:${NC}\n";
             exit 1;
         fi
     done
@@ -178,11 +209,11 @@ if [[ "$os" == "Linux" ]]; then
     df -h | grep /disk;
 
     raid_verify;
-    echo "Enter 'exit' to finalize script:";
+    printf "${GreenBG}Enter 'exit' to finalize script:${NC}\n";
     exit 0;
 else
-    echo "This OS has not been properly tested.  Please email the following results to mitapia@softlayer.com:";
+    printf "${RedBG}This OS has not been properly tested.  Please email the following results to mitapia@softlayer.com:${NC}\n";
     uname -a;
-    echo "Enter 'exit' to finalize script:";
+    printf "${GreenBG}Enter 'exit' to finalize script:${NC}\n";
     exit 1;
 fi
