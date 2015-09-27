@@ -17,7 +17,7 @@ function ssh-mdc() {
   # create screen
   screen -d -m -L -S mdc;
   # run script on screen
-  screen -S mdc -p 0 -X exec "$script";
+  screen -S mdc -p 0 -X exec ./"$script";
   # attach to screen
   screen -S mdc -r;
   
@@ -43,7 +43,7 @@ function ssh-mdc-simulate() {
   # create screen
   screen -d -m -L -S mdc;
   # run script on screen
-  screen -S mdc -p 0 -X exec "$script";
+  screen -S mdc -p 0 -X exec ./"$script";
   # attach to screen
   screen -S mdc -r;
   
@@ -51,8 +51,8 @@ function ssh-mdc-simulate() {
 }
 
 function function-update() {
-	curl -O https://raw.githubusercontent.com/mitapia/sh/master/functions.sh
-	source functions.sh
+	curl -O https://raw.githubusercontent.com/mitapia/sh/master/functions.sh;
+	source functions.sh;
 }
 
 
