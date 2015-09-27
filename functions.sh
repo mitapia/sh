@@ -50,7 +50,7 @@ function ssh-mdc-simulate() {
   rm "$script";'
 }
 
-function function-update() {
+function functions-update() {
 	curl -O https://raw.githubusercontent.com/mitapia/sh/master/functions.sh;
 	source functions.sh;
 }
