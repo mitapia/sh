@@ -42,15 +42,18 @@ function raid_verify() {
         if [[ -e $location ]]; then
             $location getstatus 1;
             $location getconfig 1 | grep "Controller\ Status\|Controller\ Model\|Logical\ device\ n\|Status\|RAID\ level";
+            return 0;
         fi
     done
 
     # LSI
-    if [ -e /opt/MegaRAID/storcli/storcli64 ]; then
+    if [[ -e /opt/MegaRAID/storcli/storcli64 ]]; then
         /opt/MegaRAID/storcli/storcli64 /c0 show all|grep -A 36 "VD LIST :";
-    else
-        printf "${Yellow}No RAID software was found! Is this server supposed to be Onboard?${NC}\n";        
-    fi
+        return 0;
+    fi    
+
+    printf "${Yellow}No RAID software was found! Is this server supposed to be Onboard?${NC}\n";        
+    return 0;
 }
 
 os="$(uname -s)";
