@@ -1,5 +1,5 @@
 function ssh-mdc() {
-	/usr/bin/ssh -t "$@" 'bash -s
+	/usr/bin/ssh -t "$@" '
 	# REQUIRED PACKAGE INSTALL
 	if [ -f /etc/redhat-release ]; then
 		yum -y install screen curl;
@@ -25,7 +25,7 @@ function ssh-mdc() {
 }
 
 function ssh-mdc-simulate() {
-	/usr/bin/ssh -t "$@" 'bash -s
+	/usr/bin/ssh -t "$@" '
 	# REQUIRED PACKAGE INSTALL
 	if [ -f /etc/redhat-release ]; then
 		yum -y install screen curl;
