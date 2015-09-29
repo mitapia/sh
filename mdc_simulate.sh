@@ -129,13 +129,6 @@ if [[ "$os" == "Linux" ]]; then
         exit 0;
     fi
 
-    if [[ $number_drives -ge 26 ]]; then
-        printf "${Yellow}Script currently does not support formating more then 25 drives.${NC}\n";
-        raid_verify;
-        printf "${GreenBG}${Black}Enter 'exit' to finalize script:${NC}\n";
-        exit 1;
-    fi
-
     # check the secondary drives for existing partitions
     for drive in ${drives[@]}; do
         # check for error reading device
@@ -147,8 +140,8 @@ if [[ "$os" == "Linux" ]]; then
 
         if [[ $( parted -sm $drive print | wc -l ) -gt 2 ]]; then
             printf "${Red}Drive $drive has partitions.${NC}\n"
-            echo "This is either a Reload and should no go through an MDC, drives have already been partitioned, or this drive was not properly Reclamed.";
-            echo "If these drives came from another server and where not formated, replace and change the status to Format in IMS.";
+            echo "This is could of been a Reload, drives have already been partitioned, or this drive was not properly Reclamed.";
+            echo "If these drives came from another server and where not properly formated, replace and change the status to Format in IMS.";
             printf "\n\n";  # just want some empty lines
             raid_verify;
             printf "${GreenBG}${Black}Enter 'exit' to finalize script:${NC}\n";
@@ -212,6 +205,7 @@ if [[ "$os" == "Linux" ]]; then
     # df -h | grep /disk;
     
     raid_verify;
+    printf "${Green}Press Ctrl-A and then ESC to scroll up.\n Press ESC again to exit scrollback mode.${NC}\n";
     printf "${GreenBG}${Black}Enter 'exit' to finalize script:${NC}\n";
     exit 0;
 else
