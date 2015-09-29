@@ -55,6 +55,10 @@ function functions-update() {
 	source functions.sh;
 }
 
+function ssh-verify-raid() {
+	ssh "$@" "bash <(curl -s https://raw.githubusercontent.com/mitapia/sh/master/raid_verify.sh)";
+}
+
 
 function ssh-test () {
      # get list of servers to use
