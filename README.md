@@ -2,7 +2,7 @@
 random work scripts
 
 
-For first time use copy and paste the following into your shelladmin: 
+For first time use copy and paste the following line into your shelladmin: 
 `curl -O https://raw.githubusercontent.com/mitapia/sh/master/functions.sh && echo "source ~/functions.sh" >> .bashrc && source .bashrc`
 
 Afterwards updates can be performed by simply running `functions-update`.
