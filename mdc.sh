@@ -140,8 +140,8 @@ if [[ "$os" == "Linux" ]]; then
 
         if [[ $( parted -sm $drive print | wc -l ) -gt 2 ]]; then
             printf "${Red}Drive $drive has partitions.${NC}\n"
-            echo "This is could of been a Reload, drives have already been partitioned, or this drive was not properly Reclamed.";
-            echo "If these drives came from another server and where not properly formated, replace and change the status to Format in IMS.";
+            echo "The partitions for the secondary disk(s) were already set. This could have been because the partitions were already defined for the provision or because this is a Reload.";
+            echo "This could also happen if the drive was not properly formatted during the Reclaim process, which will require you to replace the drive and make sure it is formatted correctly.";
             printf "\n\n";  # just want some empty lines
             raid_verify;
             printf "${GreenBG}${Black}Enter 'exit' to finalize script:${NC}\n";
@@ -202,7 +202,10 @@ if [[ "$os" == "Linux" ]]; then
     done
 
     mount -a;
+
+    tput setaf 2;   # Green
     df -h | grep /disk;
+    tput sgr0;      # No color
 
     raid_verify;
     printf "${Green}Press Ctrl-A and then ESC to scroll up.\n Press ESC again to exit scrollback mode.${NC}\n";
