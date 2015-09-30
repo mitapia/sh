@@ -2,9 +2,9 @@ function ssh-mdc() {
 	/usr/bin/ssh -t "$@" '
 	# REQUIRED PACKAGE INSTALL
 	if [ -f /etc/redhat-release ]; then
-		yum -y install screen curl;
+		yum -y install screen curl bc;
 	else
-		apt-get -y install screen curl;
+		apt-get -y install screen curl bc;
 	fi
 
   link=https://raw.githubusercontent.com/mitapia/sh/master/mdc.sh
@@ -28,9 +28,9 @@ function ssh-mdc-simulate() {
 	/usr/bin/ssh -t "$@" '
 	# REQUIRED PACKAGE INSTALL
 	if [ -f /etc/redhat-release ]; then
-		yum -y install screen curl;
+		yum -y install screen curl bc;
 	else
-		apt-get -y install screen curl;
+		apt-get -y install screen curl bc;
 	fi
 
   link=https://raw.githubusercontent.com/mitapia/sh/master/mdc_simulate.sh
