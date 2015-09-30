@@ -113,8 +113,6 @@ if [[ "$os" == "Linux" ]]; then
 
         # if CentOS or RHEL, then check for ver.
         if [[ "$id" == "centos" ]] || [[ "$id" == "rhel" ]]; then
-            # REQUIRED PACKAGE INSTALL
-            yum -y install bc;  # required for the ver comparison to work
             if (( $(bc <<< "$version_id >= 7") )); then
                 above_7="true";
             fi
@@ -164,8 +162,7 @@ if [[ "$os" == "Linux" ]]; then
 
         # set in GB
         limit=$((2000))
-        if [[ "$drive_size" -le "$limit" ]]
-        then
+        if (( $(bc <<< "$drive_size <= $limit") )); then
             parted -s "$drive" mklabel msdos;
         else
             parted -s "$drive" mklabel gpt;
@@ -177,7 +174,7 @@ if [[ "$os" == "Linux" ]]; then
         #  ext4 - up to 16TB
         #  xfs - 16TB-8EB  *per IS, CENTOS & RHEL v7 and above get XFS regardless of drive size
         fs_size=$((16*1000))    #GB
-        if [[ "$above_7" == "false" ]] && [[ "$drive_size" -le "$fs_size" ]]; then
+        if [[ "$above_7" == "false" ]] && (( $(bc <<< "$drive_size <= $fs_size") )); then
             fs=ext4;
         else
             fs=xfs;
