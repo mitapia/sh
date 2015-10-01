@@ -141,6 +141,9 @@ if [[ "$os" == "Linux" ]]; then
             echo "The partitions for the secondary disk(s) were already set. This could have been because the partitions were already defined for the provision or because this is a Reload.";
             echo "This could also happen if the drive was not properly formatted during the Reclaim process, which will require you to replace the drive and make sure it is formatted correctly.";
             printf "\n\n";  # just want some empty lines
+            tput setaf 2;   # Green
+            df -h | grep -v "/dev/sda\|tmpfs";
+            tput sgr0;      # No color
             raid_verify;
             printf "${GreenBG}${Black}Enter 'exit' to finalize script:${NC}\n";
             exit 1;
