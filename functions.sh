@@ -58,15 +58,3 @@ function functions-update() {
 function ssh-verify-raid() {
 	ssh "$@" "bash <(curl -s https://raw.githubusercontent.com/mitapia/sh/master/raid_verify.sh)";
 }
-
-
-function ssh-test () {
-     # get list of servers to use
-     while read login; do
-          # it is recommended to set up ssh keys for the servers in testing_server.list to avoid password prompt
-          # connect to server and run script
-          ssh-mdc "$login";
-          echo "Completed for " "$login";
-
-     done < testing_servers.list  # each line must be 'user@ip'
-}
