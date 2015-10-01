@@ -93,6 +93,14 @@ if [[ "$os" == "Linux" ]]; then
         }
     fi
 
+    # foudn that dabian comes with /dev/fd0 and makes parted stall
+    # solution found here:  http://unix.stackexchange.com/questions/53513/linux-disable-dev-fd0-floppy
+    if [[ $( cat /etc/fstab | grep /dev/fd0 | wc -l ) -gt 0 ]]; then
+        echo "blacklist floppy" | tee /etc/modprobe.d/blacklist-floppy.conf;
+        rmmod floppy;
+        update-initramfs -u;
+    fi
+
     # store necessary variables
     number_drives=$( parted -lms | grep /dev/sd | grep -v /dev/sda -c );
     drives=( $( parted -lms | grep /dev/sd | grep -v /dev/sda | awk -F':' '{ print $1}' ) )
