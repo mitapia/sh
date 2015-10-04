@@ -58,3 +58,12 @@ function functions-update() {
 function ssh-verify-raid() {
 	ssh "$@" "bash <(curl -s https://raw.githubusercontent.com/mitapia/sh/master/raid_verify.sh)";
 }
+
+# requested by: Fabian Jardin
+function ssh-rainbow() {
+  ssh -t "$@" "
+    cp ~/.bashrc ~/.bashrc.bak;
+    echo 'export PS1=\"\[\$(tput bold)\]\[\$(tput setaf 1)\][\[\$(tput setaf 3)\]\u\[\$(tput setaf 2)\]@\[\$(tput setaf 6)\]\h \[\$(tput setaf 5)\]\W\[\$(tput setaf 1)\]]\[\$(tput setaf 7)\]\\\\$ \[\$(tput sgr0)\]\"' >> ~/.bashrc; 
+    bash -i; 
+    mv ~/.bashrc.bak ~/.bashrc;"
+}
