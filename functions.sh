@@ -1,5 +1,10 @@
 function ssh-mdc() {
 	/usr/bin/ssh -t "$@" '
+	if (( $(who | wc -l) > 1 )); then
+		printf "$(tput setaf 1)There is someone currenly logged in to this server, to continue safely have all other user log off while MDC script runs.$(tput sgr0)\n";
+		w;
+		exit 1;
+	fi
 	# REQUIRED PACKAGE INSTALL
 	if [ -f /etc/redhat-release ]; then
 		yum -y install screen curl bc;
@@ -26,6 +31,11 @@ function ssh-mdc() {
 
 function ssh-mdc-simulate() {
 	/usr/bin/ssh -t "$@" '
+	if (( $(who | wc -l) > 1 )); then
+		printf "$(tput setaf 1)There is someone currenly logged in to this server, to continue safely have all other user log off while MDC script runs.$(tput sgr0)\n";
+		w;
+		exit 1;
+	fi
 	# REQUIRED PACKAGE INSTALL
 	if [ -f /etc/redhat-release ]; then
 		yum -y install screen curl bc;
