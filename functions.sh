@@ -5,6 +5,10 @@ function ssh-mdc() {
 		w;
 		exit 1;
 	fi
+	cp ~/.bash_profile ~/.bash_profile.bak;
+    echo "printf \"\$(tput setaf 1)A Manual Drive Configuration script is currently in progress, logging out.\$(tput sgr0)\n\"" >> ~/.bash_profile; 
+    echo "logout;" >> ~/.bash_profile; 
+
 	# REQUIRED PACKAGE INSTALL
 	if [ -f /etc/redhat-release ]; then
 		yum -y install screen curl bc;
@@ -26,7 +30,8 @@ function ssh-mdc() {
   # attach to screen
   screen -S mdc -r;
   
-  rm "$script";'
+  rm "$script";
+  mv ~/.bash_profile.bak ~/.bash_profile;'
 }
 
 function ssh-mdc-simulate() {
@@ -36,6 +41,10 @@ function ssh-mdc-simulate() {
 		w;
 		exit 1;
 	fi
+	cp ~/.bash_profile ~/.bash_profile.bak;
+    echo "printf \"\$(tput setaf 1)A Manual Drive Configuration script is currently in progress, logging out.\$(tput sgr0)\n\"" >> ~/.bash_profile; 
+    echo "logout;" >> ~/.bash_profile; 
+    
 	# REQUIRED PACKAGE INSTALL
 	if [ -f /etc/redhat-release ]; then
 		yum -y install screen curl bc;
@@ -57,7 +66,8 @@ function ssh-mdc-simulate() {
   # attach to screen
   screen -S mdc -r;
   
-  rm "$script";'
+  rm "$script";
+  mv ~/.bash_profile.bak ~/.bash_profile;'
 }
 
 function functions-update() {
