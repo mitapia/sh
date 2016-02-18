@@ -1,13 +1,22 @@
 function ssh-mdc() {
+  # download script
+  	link=https://raw.githubusercontent.com/mitapia/sh/master/mdc.sh
+  	curl "$link" -o /tmp/mdc.sh;
+	
+	scp /tmp/mdc.sh "$@":~;
+
 	/usr/bin/ssh -t "$@" '
 	if (( $(who | wc -l) > 1 )); then
 		printf "$(tput setaf 1)There is someone currenly logged in to this server, to continue safely have all other user log off while MDC script runs.$(tput sgr0)\n";
 		w;
 		exit 1;
 	fi
-	cp ~/.bash_profile ~/.bash_profile.bak;
+	touch ~/.bash_profile && cp ~/.bash_profile ~/.bash_profile.bak;
     echo "printf \"\$(tput setaf 1)A Manual Drive Configuration script is currently in progress, logging out.\$(tput sgr0)\n\"" >> ~/.bash_profile; 
     echo "logout;" >> ~/.bash_profile; 
+
+    # check for a running mdc script
+    screen -ls | grep mdc
 
 	# REQUIRED PACKAGE INSTALL
 	if [ -f /etc/redhat-release ]; then
@@ -16,11 +25,7 @@ function ssh-mdc() {
 		apt-get -y install screen curl bc;
 	fi
 
-  link=https://raw.githubusercontent.com/mitapia/sh/master/mdc.sh
   script=mdc.sh
-  
-  # download script
-  curl "$link" -o "$script";
   chmod +x "$script";
   
   # create screen
@@ -35,13 +40,19 @@ function ssh-mdc() {
 }
 
 function ssh-mdc-simulate() {
+  	# download script
+  	link=https://raw.githubusercontent.com/mitapia/sh/master/mdc_simulate.sh;
+  	curl "$link" -o /tmp/mdc.sh;
+
+	scp /tmp/mdc.sh "$@":~;
+
 	/usr/bin/ssh -t "$@" '
 	if (( $(who | wc -l) > 1 )); then
 		printf "$(tput setaf 1)There is someone currenly logged in to this server, to continue safely have all other user log off while MDC script runs.$(tput sgr0)\n";
 		w;
 		exit 1;
 	fi
-	cp ~/.bash_profile ~/.bash_profile.bak;
+	touch ~/.bash_profile && cp ~/.bash_profile ~/.bash_profile.bak;
     echo "printf \"\$(tput setaf 1)A Manual Drive Configuration script is currently in progress, logging out.\$(tput sgr0)\n\"" >> ~/.bash_profile; 
     echo "logout;" >> ~/.bash_profile; 
     
@@ -52,11 +63,7 @@ function ssh-mdc-simulate() {
 		apt-get -y install screen curl bc;
 	fi
 
-  link=https://raw.githubusercontent.com/mitapia/sh/master/mdc_simulate.sh
   script=mdc.sh
-  
-  # download script
-  curl "$link" -o "$script";
   chmod +x "$script";
   
   # create screen
