@@ -103,6 +103,13 @@ if [[ "$os" == "Linux" ]]; then
 
     # store necessary variables
     number_drives=$( parted -lms | grep /dev/sd | grep -vw /dev/sda -c );
+    if [ parted -lms | grep Error ]; then
+        # must find a way to work aroud 'Error: /dev/sdab: unrecognised disk label'
+        printf "${Yellow}Parted has reported Erros, stoppig script.${NC}\n";
+        parted -lms | grep Error;
+        printf "${GreenBG}${Black}Enter 'exit' to finalize script:${NC}\n";
+        exit 0;
+    fi
     drives=( $( parted -lms | grep /dev/sd | grep -vw /dev/sda | awk -F':' '{ print $1}' ) )
 
     above_7="false"
