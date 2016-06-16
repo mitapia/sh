@@ -102,8 +102,8 @@ if [[ "$os" == "Linux" ]]; then
     fi
 
     # store necessary variables
-    number_drives=$( parted -lms | grep /dev/sd | grep -vx /dev/sda -c );
-    drives=( $( parted -lms | grep /dev/sd | grep -vx /dev/sda | awk -F':' '{ print $1}' ) )
+    number_drives=$( parted -lms | grep /dev/sd | grep -vw /dev/sda -c );
+    drives=( $( parted -lms | grep /dev/sd | grep -vw /dev/sda | awk -F':' '{ print $1}' ) )
 
     above_7="false"
     # checks for CentOS/RHEL ver 7 and above
@@ -150,7 +150,7 @@ if [[ "$os" == "Linux" ]]; then
             echo "This could also happen if the drive was not properly formatted during the Reclaim process, which will require you to replace the drive and make sure it is formatted correctly.";
             printf "\n\n";  # just want some empty lines
             tput setaf 2;   # Green
-            df -h | grep -vx "/dev/sda\|tmpfs";
+            df -h | grep -vw "/dev/sda\|tmpfs";
             tput sgr0;      # No color
             raid_verify;
             printf "${GreenBG}${Black}Enter 'exit' to finalize script:${NC}\n";
