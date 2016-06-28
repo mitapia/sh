@@ -3,7 +3,7 @@ function ssh-mdc() {
   	link=https://raw.githubusercontent.com/mitapia/sh/master/mdc.sh
   	curl -o ~/tmp/mdc.sh --create-dirs "$link";
 	
-	scp /tmp/mdc.sh "$@":~;
+	scp ~/tmp/mdc.sh "$@":~;
 
 	/usr/bin/ssh -t "$@" '
 	if (( $(who | wc -l) > 1 )); then
@@ -46,7 +46,7 @@ function ssh-mdc-simulate() {
   	link=https://raw.githubusercontent.com/mitapia/sh/master/mdc_simulate.sh;
   	curl -o ~/tmp/mdc.sh --create-dirs "$link";
 
-	scp /tmp/mdc.sh "$@":~;
+	scp ~/tmp/mdc.sh "$@":~;
 
 	/usr/bin/ssh -t "$@" '
 	if (( $(who | wc -l) > 1 )); then
