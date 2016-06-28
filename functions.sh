@@ -1,7 +1,7 @@
 function ssh-mdc() {
   # download script
   	link=https://raw.githubusercontent.com/mitapia/sh/master/mdc.sh
-  	curl "$link" -o /tmp/mdc.sh;
+  	curl -o ~/tmp/mdc.sh --create-dirs "$link";
 	
 	scp /tmp/mdc.sh "$@":~;
 
@@ -37,12 +37,14 @@ function ssh-mdc() {
   
   rm "$script";
   mv ~/.bash_profile.bak ~/.bash_profile;'
+
+  rm -r ~/tmp/mdc.sh
 }
 
 function ssh-mdc-simulate() {
   	# download script
   	link=https://raw.githubusercontent.com/mitapia/sh/master/mdc_simulate.sh;
-  	curl "$link" -o /tmp/mdc.sh;
+  	curl -o ~/tmp/mdc.sh --create-dirs "$link";
 
 	scp /tmp/mdc.sh "$@":~;
 
@@ -75,6 +77,8 @@ function ssh-mdc-simulate() {
   
   rm "$script";
   mv ~/.bash_profile.bak ~/.bash_profile;'
+
+  rm -r ~/tmp/mdc.sh
 }
 
 function functions-update() {
