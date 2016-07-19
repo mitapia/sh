@@ -54,9 +54,6 @@ function ssh-mdc-simulate() {
 		w;
 		exit 1;
 	fi
-	touch ~/.bash_profile && cp ~/.bash_profile ~/.bash_profile.bak;
-    echo "printf \"\$(tput setaf 1)A Manual Drive Configuration script is currently in progress, logging out.\$(tput sgr0)\n\"" >> ~/.bash_profile; 
-    echo "logout;" >> ~/.bash_profile; 
     
 	# REQUIRED PACKAGE INSTALL
 	if [ -f /etc/redhat-release ]; then
@@ -64,6 +61,8 @@ function ssh-mdc-simulate() {
 	else
 		apt-get -y install screen curl bc;
 	fi
+
+  sshuser=$(whoami)
 
   script=mdc.sh
   chmod +x "$script";
@@ -75,8 +74,7 @@ function ssh-mdc-simulate() {
   # attach to screen
   screen -S mdc -r;
   
-  rm "$script";
-  mv ~/.bash_profile.bak ~/.bash_profile;'
+  rm "$script";'
 
   rm -r ~/tmp/mdc.sh
 }

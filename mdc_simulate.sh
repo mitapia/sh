@@ -93,6 +93,11 @@ if [[ "$os" == "Linux" ]]; then
         }
     fi
 
+    # 
+    touch ~/.bash_profile && cp ~/.bash_profile ~/.bash_profile.bak;
+    echo "printf \"\$(tput setaf 1)$sshuser is currently running MDC sript, logging out.\$(tput sgr0)\n\"" >> ~/.bash_profile; 
+    echo "logout;" >> ~/.bash_profile; 
+
     # foudn that dabian comes with /dev/fd0 and makes parted stall
     # solution found here:  http://unix.stackexchange.com/questions/53513/linux-disable-dev-fd0-floppy
     if [[ $( cat /etc/fstab | grep /dev/fd0 | wc -l ) -gt 0 ]]; then
@@ -218,6 +223,7 @@ if [[ "$os" == "Linux" ]]; then
 
     # mount -a;
     # df -h | grep /disk;
+    mv ~/.bash_profile.bak ~/.bash_profile;
     
     raid_verify;
     printf "${Green}Press Ctrl-A and then ESC to scroll up.\n Press ESC again to exit scrollback mode.${NC}\n";
