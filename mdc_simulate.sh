@@ -95,8 +95,8 @@ if [[ "$os" == "Linux" ]]; then
 
     # 
     touch ~/.bash_profile && cp ~/.bash_profile ~/.bash_profile.bak;
-    echo "printf \"\$(tput setaf 1)$sshuser is currently running MDC sript, logging out.\$(tput sgr0)\n\"" >> ~/.bash_profile; 
-    echo "logout;" >> ~/.bash_profile; 
+    echo "source ~/.progress" >> ~/.bash_profile; 
+    #echo "logout;" >> ~/.bash_profile; ## move to .progress
 
     # foudn that dabian comes with /dev/fd0 and makes parted stall
     # solution found here:  http://unix.stackexchange.com/questions/53513/linux-disable-dev-fd0-floppy
@@ -108,7 +108,7 @@ if [[ "$os" == "Linux" ]]; then
 
     # store necessary variables
     number_drives=$( parted -lms | grep /dev/sd | grep -vw /dev/sda -c );
-    if [[ parted -lms | grep Error ]]; then
+    if ( parted -lms | grep Error ); then
         # must find a way to work aroud 'Error: /dev/sdab: unrecognised disk label'
         printf "${Yellow}Parted has reported Erros, stoppig script.${NC}\n";
         parted -lms | grep Error;
@@ -223,6 +223,7 @@ if [[ "$os" == "Linux" ]]; then
 
     # mount -a;
     # df -h | grep /disk;
+    rm ~/.progress
     mv ~/.bash_profile.bak ~/.bash_profile;
     
     raid_verify;
