@@ -63,6 +63,9 @@ function ssh-mdc-simulate() {
 	fi
 
   sshuser=$(whoami)
+  echo "printf \"\$(tput setaf 1)$sshuser is currently running MDC sript, logging out.\$(tput sgr0)\n\"" >> ~/.progress;
+  echo "Working on drive $working_drive of $total_drives" >> ~/.progress
+  echo "logout;" >> ~/.progress
 
   script=mdc.sh
   chmod +x "$script";
@@ -95,4 +98,26 @@ function ssh-rainbow() {
     echo 'export PS1=\"\[\$(tput bold)\]\[\$(tput setaf 1)\][\[\$(tput setaf 3)\]\u\[\$(tput setaf 2)\]@\[\$(tput setaf 6)\]\h \[\$(tput setaf 5)\]\W\[\$(tput setaf 1)\]]\[\$(tput setaf 7)\]\\\\$ \[\$(tput sgr0)\]\"' >> ~/.bashrc; 
     bash -i; 
     mv ~/.bashrc.bak ~/.bashrc;"
+}
+
+function ipmi-status() {
+  ipmitool -I lan -H "$1" -U ADMIN -P "$2" chassis status;
+}
+
+function ipmi-on() {
+  ipmitool -I lan -H "$1" -U ADMIN -P "$2" chassis power on;
+  sleep 5;
+  ipmitool -I lan -H "$1" -U ADMIN -P "$2" chassis power status;
+}
+
+function ipmi-off() {
+  ipmitool -I lan -H "$1" -U ADMIN -P "$2" chassis power off;
+  sleep 5;
+  ipmitool -I lan -H "$1" -U ADMIN -P "$2" chassis power status;
+}
+
+function ipmi-reset() {
+  ipmitool -I lan -H "$1" -U ADMIN -P "$2" chassis power reset;
+  sleep 5;
+  ipmitool -I lan -H "$1" -U ADMIN -P "$2" chassis power status;
 }
